@@ -25,20 +25,19 @@ class SecondImplementationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second_implementation)
         val imageView = findViewById<ImageView>(R.id.imageView)
-
+        // declaring views
         selectImage = findViewById(R.id.select_btn)
         uploadImage = findViewById(R.id.upload_btn)
-
+        // setting selectimage button on clicklistener
         selectImage.setOnClickListener {
             if (isPermissionAllowed()) {
                 selectImage()
             } else {
                 askForPermission()
             }
-            // selectImage()
         }
     }
-
+    // functionto ask for permission to access phone storage
     private fun askForPermission(): Boolean {
         if (!isPermissionAllowed()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
@@ -58,7 +57,7 @@ class SecondImplementationActivity : AppCompatActivity() {
         }
         return true
     }
-
+    // creating permission alert dialog
     private fun showPermissionDeniedDialog() {
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle("Permission Denied")
@@ -79,7 +78,7 @@ class SecondImplementationActivity : AppCompatActivity() {
         alertDialog.create()
         alertDialog.show()
     }
-
+    // function checks if permission is already allowed
     private fun isPermissionAllowed(): Boolean {
         return ActivityCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
     }
@@ -89,7 +88,7 @@ class SecondImplementationActivity : AppCompatActivity() {
         intent.type = "image/*"
         startActivityForResult(intent, REQUEST_CODE)
     }
-
+    // function to dispatch the image result to the imageview
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {

@@ -6,8 +6,6 @@ import retrofit2.http.Path
 
 interface PokemonApiInterface {
 
-//    @GET("api/v2/pokemon/ditto")
-//    fun getPokemonData():Call<List<Pokemon>>
     @GET("{url}")
     fun getPokemon(@Path("url") url: String): Call<Pokemon>
 

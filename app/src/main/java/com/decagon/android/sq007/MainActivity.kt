@@ -12,38 +12,38 @@ import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(), Clicklistener {
-    val baseUrl = "https://pokeapi.co/api/v2/pokemon/"
+    // declaring variables to be used to be initialised later on
     lateinit var secondImplementation: FloatingActionButton
     lateinit var recyclerView: RecyclerView
     lateinit var interfaceInstance: PokemonApiInterface
-    // lateinit var pokemonList: List<>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+// initializing variables and declaring recycleriew layout manager and adapter
+        val baseUrl = "https://pokeapi.co/api/v2/pokemon/"
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
         secondImplementation = findViewById(R.id.fob)
+        // clicklistener for button that leads to the second impplementation
         secondImplementation.setOnClickListener {
             val intent = Intent(this, SecondImplementationActivity::class.java)
             startActivity(intent)
         }
+        /**declaring retrofit builder and setting converter factory used
+         * and its base url
+         * */
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(baseUrl)
             .build()
         Log.d("build", "check")
-//            .create(PokemonApiInterface::class.java)
-
+        // creating an instance of PokemonApiInterface
         interfaceInstance = retrofitBuilder.create()
-//        val retrofitData = retrofitBuilder.getPokemonData()
-//
-//        retrofitData.enqueue(object : Callback<List<Pokemon>?>){
-//
-//        }
-        val callResult: Call<PokemonData> = interfaceInstance.getPokemonData()
 
+        // initializing the API call
+        val callResult: Call<PokemonData> = interfaceInstance.getPokemonData()
+        // sending the result and notifying Callback of the result
         callResult.enqueue(object : Callback<PokemonData> {
             override fun onFailure(call: Call<PokemonData>, t: Throwable) {
                 Log.d("output4", "$t")
@@ -62,6 +62,10 @@ class MainActivity : AppCompatActivity(), Clicklistener {
         })
     }
 
+    /**
+     * this function handles the clicking response of the recyclerview elements
+     * a call is sent when each item is clicked and the Callback object is notified of the result
+     */
     override fun onItemClicked(position: Int) {
         val callResultDetails: Call<Pokemon> = interfaceInstance.getPokemon("$position")
         callResultDetails.enqueue(object : Callback<Pokemon> {
@@ -76,7 +80,6 @@ class MainActivity : AppCompatActivity(), Clicklistener {
                     PokemonHolder.stats = response.body()!!.stats
                     PokemonHolder.position = position
                     PokemonHolder.name = response.body()!!.name
-
                     this@MainActivity.startActivity(Intent(this@MainActivity, PokemonDetailsActivity::class.java))
                 } else {
                     Log.d("Failure", "${response.code()}")
