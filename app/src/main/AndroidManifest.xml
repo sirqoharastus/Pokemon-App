@@ -14,7 +14,7 @@
         android:theme="@style/Theme.DecagonAndroid007">
         <activity android:name=".PokemonDetailsActivity"></activity>
         <activity android:name=".SecondImplementationActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".PokemonMainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

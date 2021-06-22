@@ -8,14 +8,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.decagon.android.sq007.Clicklistener
+import com.decagon.android.sq007.ClicklistenerInterface
 import com.decagon.android.sq007.PokemonDataGotten
 import com.decagon.android.sq007.R
 
 class PokemonAdapterClass(
     val pokemonList: List<PokemonDataGotten>,
     var context: Context,
-    var listener: Clicklistener
+    var listener: ClicklistenerInterface
 ) : RecyclerView.Adapter<PokemonAdapterClass.PokemonViewHolder>() {
 
     inner class PokemonViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,7 +25,7 @@ class PokemonAdapterClass(
         fun bind(item: List<PokemonDataGotten>, position: Int) {
             descriptionText.text = item[position].name
             Glide.with(context)
-                .load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${position + 1}.png")
+                .load("$POKEMON_IMAGE_URL${position + 1}.png")
                 .into(image)
         }
     }
@@ -49,3 +49,6 @@ class PokemonAdapterClass(
         }
     }
 }
+
+
+const val POKEMON_IMAGE_URL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"

@@ -7,4 +7,5 @@
     <string name="stats">STATS</string>
     <string name="moves">MOVES</string>
     <string name="abilities2">ABILITIES</string>
+    <string name="name">Name</string>
 </resources>

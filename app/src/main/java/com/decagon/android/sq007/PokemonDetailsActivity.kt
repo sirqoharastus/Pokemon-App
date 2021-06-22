@@ -2,6 +2,7 @@ package com.decagon.android.sq007
 
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,9 +21,11 @@ class PokemonDetailsActivity : AppCompatActivity() {
         val statRecyclerView: RecyclerView = findViewById(R.id.stats_recyclerview)
         // declaring pokemon Imageview and using Glide to load the image gotten from the response
         val pokemonImage: ImageView = findViewById(R.id.PokemonDetailsImage)
+        val pokemonName:TextView = findViewById(R.id.pokemon_details_name_textView)
         Glide.with(this)
             .load("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${PokemonHolder.position + 1}.png")
             .into(pokemonImage)
+        pokemonName.text = PokemonHolder.name
         // setting layout manager for the recyclerviews
         abilityRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         moveRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)

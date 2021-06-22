@@ -11,7 +11,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity(), Clicklistener {
+class PokemonMainActivity : AppCompatActivity(), ClicklistenerInterface {
     // declaring variables to be used to be initialised later on
     lateinit var secondImplementation: FloatingActionButton
     lateinit var recyclerView: RecyclerView
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity(), Clicklistener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 // initializing variables and declaring recycleriew layout manager and adapter
-        val baseUrl = "https://pokeapi.co/api/v2/pokemon/"
+
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = GridLayoutManager(this, 2)
         secondImplementation = findViewById(R.id.fob)
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity(), Clicklistener {
          * */
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(baseUrl)
+            .baseUrl(BASE_URL)
             .build()
         Log.d("build", "check")
         // creating an instance of PokemonApiInterface
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity(), Clicklistener {
             }
             override fun onResponse(call: Call<PokemonData>, response: Response<PokemonData>) {
                 if (response.isSuccessful) {
-                    recyclerView.adapter = PokemonAdapterClass(response.body()!!.results, this@MainActivity, this@MainActivity)
+                    recyclerView.adapter = PokemonAdapterClass(response.body()!!.results, this@PokemonMainActivity, this@PokemonMainActivity)
 
                     Log.d("output1", response.message())
                     Log.d("output2", "$response")
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), Clicklistener {
                     PokemonHolder.stats = response.body()!!.stats
                     PokemonHolder.position = position
                     PokemonHolder.name = response.body()!!.name
-                    this@MainActivity.startActivity(Intent(this@MainActivity, PokemonDetailsActivity::class.java))
+                    this@PokemonMainActivity.startActivity(Intent(this@PokemonMainActivity, PokemonDetailsActivity::class.java))
                 } else {
                     Log.d("Failure", "${response.code()}")
                 }
@@ -88,3 +88,5 @@ class MainActivity : AppCompatActivity(), Clicklistener {
         })
     }
 }
+
+const val BASE_URL = "https://pokeapi.co/api/v2/pokemon/"

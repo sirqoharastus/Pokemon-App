@@ -12,8 +12,16 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
 
 class SecondImplementationActivity : AppCompatActivity() {
     lateinit var selectImage: Button
@@ -21,6 +29,7 @@ class SecondImplementationActivity : AppCompatActivity() {
     var REQUEST_CODE = 100
     lateinit var bitmap: Bitmap
     lateinit var imageView: ImageView
+    var selectedImage:Uri? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second_implementation)
@@ -36,8 +45,34 @@ class SecondImplementationActivity : AppCompatActivity() {
                 askForPermission()
             }
         }
+
+        uploadImage.setOnClickListener {
+            uploadImageFunction()
+        }
     }
-    // functionto ask for permission to access phone storage
+
+    private fun uploadImageFunction() {
+        val file = File(FileUtil.getPath(selectedImage!!, this)!!)
+        val requestBody = file.asRequestBody("image/jpg".toMediaTypeOrNull())
+        val multipartBody = MultipartBody.Part.createFormData("file", file.name,requestBody)
+        RetrofitClient.getImage().uploadImage(multipartBody).enqueue(object: Callback<ImageClass>{
+            override fun onFailure(call: Call<ImageClass>, t: Throwable) {
+                t.message.let { Toast.makeText(applicationContext, it, Toast.LENGTH_LONG).show() }
+            }
+
+            override fun onResponse(call: Call<ImageClass>, response: Response<ImageClass>) {
+                if (response.isSuccessful){
+                    response.body().let {
+                        if (it != null) {
+                            Toast.makeText(applicationContext,it.message,Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    // function to ask for permission to access phone storage
     private fun askForPermission(): Boolean {
         if (!isPermissionAllowed()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(
@@ -92,8 +127,8 @@ class SecondImplementationActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-            val path: Uri? = data.data
-            bitmap = MediaStore.Images.Media.getBitmap(contentResolver, path)
+            selectedImage = data.data
+            bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedImage)
             imageView = findViewById(R.id.imageView)
             imageView.setImageBitmap(bitmap)
         }
